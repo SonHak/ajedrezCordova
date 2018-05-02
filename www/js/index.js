@@ -18,9 +18,14 @@
  */
 
 
-var figuras = ["","♙","♟"];
+var figuras = ["","♔","♚"];
 var myId = null;
 var idPartida = null;
+var posOrigen = "";
+var posFinal = "";
+var figura = "";
+
+
  var app = {
     // Application Constructor
     initialize: function() {
@@ -36,15 +41,13 @@ var idPartida = null;
         document.getElementById('login').addEventListener("click",formLogin);
         document.getElementById('logout').addEventListener("click",logout);
 
-        let id = setInterval(function(){
-            getPartida(id);
-           //clearInterval(id);
-        },2000);
+        let i = setInterval(function(){
+            getPartida(i);
+        },5000);
 
         setInterval(function(){
-            getFicha(idPartida);
-           //clearInterval(id);
-        },2000);
+            setFicha(idPartida);
+        },5000);
     },
 
     // Update DOM on a Received Event
@@ -98,7 +101,7 @@ var idPartida = null;
 
                          var cuadrado = $("<td id="+i+j+" class='white' style='background-color: white' ></td>");
                          cuadrado.click(function printPosicion(event){
-                            alert(event.currentTarget.id);
+                            actualizarFicha(event.currentTarget.id);
                         });
                          tablero.append(cuadrado);
                      }
@@ -110,7 +113,7 @@ var idPartida = null;
      },
 
     mostrarUsuarios: function(){
-        setInterval(listadoUsuarios,2000);
+        setInterval(listadoUsuarios,5000);
      },
 
 };
@@ -171,29 +174,15 @@ function logout(){
             $('#mostrar').hide(100);
             $('#logout').hide(1000);
 
+            i = setInterval(function(){
+                 getPartida(i);
+            },5000);
+
 
         },
         error: function(data) {alert("fail al hacer logout"); }
     });
 
-}
-
-function actualizarFicha(event){
-
-    var posicionActual = event.target.id;
-
-    
-     $.ajax({
-            type: "POST",
-            url: "http://127.0.0.1:8080/api/actualizar",
-            data: {posicion: posicion, idPartida: idPartida, idFigura: idFigura},
-            timeout: 5000,
-            success: function(data){
-                console.log("actualiza");
-            },
-            error: function(data) {alert("fail al hacer logout"); }
-        });
-    
 }
 
 
@@ -206,7 +195,9 @@ function invitarJugador(){
         data: {usuarioCrea: myId, usuarioAcepta: idInvitado},
         timeout: 5000,
         success: function(data){
-            console.log(data);           
+            console.log(data); 
+            idPartida = data.id;
+            getPartida(idPartida);          
         } ,
         error: function(data) { alert("error al devolver contenido"); }
 
@@ -229,7 +220,9 @@ function getPartida(i){
                 $('#mostrar').hide();
                 app.crearTablero();
                 
-                setFichasInicio(data.id);
+                if(myId != "" && myId != null){
+                    setFichasInicio(data.id);
+                }
                 idPartida = data.id;
 
                 clearInterval(i);
@@ -252,7 +245,7 @@ function setFichasInicio(id){
             console.log(data)
 
             if(data.state == "1"){
-                getFicha(id);
+                setFicha(id);
             }
 
         },
@@ -263,7 +256,7 @@ function setFichasInicio(id){
 
 
 
-function getFicha(id){
+function setFicha(id){
       $.ajax({
         type: "POST",
         url: "http://127.0.0.1:8080/api/getFichas",
@@ -274,7 +267,7 @@ function getFicha(id){
             $("table span").remove();
             for(var i = 0 ; i<data.length; i++){
                     var figurita = $("<span>",{'id': data[i].id}).text(figuras[data[i].figura]);
-                    $('#'+data[i].posInicial).append(figurita);
+                    $('#'+data[i].posFinal).append(figurita);
                 
             }
 
@@ -282,6 +275,36 @@ function getFicha(id){
         error: function(data){console.log(data)},
     });
 }
+
+
+function actualizarFicha(event){
+
+    var hijo = $('#'+event).children();
+
+    if(posOrigen == "" && posFinal == "" && hijo.length > 0){
+        posOrigen = event;
+        figura = hijo[0].id;
+    }else if(posOrigen != "" && posFinal == ""){
+        posFinal = event;
+         $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8080/api/actualizar",
+                data: {posOrigen: posOrigen,posFinal: posFinal,idPartida: idPartida, idFigura: figura},
+                timeout: 5000,
+                success: function(data){
+                    console.log("actualiza");
+                    posOrigen = "";
+                    posFinal = "";
+                },
+                error: function(data) {alert("fail al enviar datos"); }
+            });
+    }
+
+   
+}
+
+
+
 
 function listadoUsuarios(){
 
@@ -317,11 +340,5 @@ function listadoUsuarios(){
 
 
 //adriescacs.herokuapp.com/api/login
-/*
 
-    if(data != "error al loggear"){
-        app.crearTablero();
-    }
-
-    */
 app.initialize();
