@@ -126,7 +126,7 @@ function formLogin(){
 
     $.ajax({
         type: "POST",
-        url:"http://127.0.0.1:8080/api/login",
+        url:"adriescacs.herokuapp.com/api/login",
         data: {email: mail, password: passwd},
         //contentType: "application/json; charset=utf-8",
         timeout: 2000,
@@ -162,7 +162,7 @@ function logout(){
 
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8080/api/logout",
+        url: "adriescacs.herokuapp.com/api/logout",
         data: {email: email, token: token},
         timeout: 5000,
         success: function(data){
@@ -191,7 +191,7 @@ function invitarJugador(){
 
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8080/api/juga",
+        url: "adriescacs.herokuapp.com/api/juga",
         data: {usuarioCrea: myId, usuarioAcepta: idInvitado},
         timeout: 5000,
         success: function(data){
@@ -212,7 +212,7 @@ function getPartida(i){
     if(myId != null && myId != "" && myId != "undefined"){
         $.ajax({
             type: "POST",
-            url: "http://127.0.0.1:8080/api/getPartida",
+            url: "adriescacs.herokuapp.com/api/getPartida",
             data: {id : myId},
             timeout: 5000,
             success: function(data){
@@ -237,7 +237,7 @@ function setFichasInicio(id){
     
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8080/api/setFichas",
+        url: "adriescacs.herokuapp.com/api/setFichas",
         data: {currentId: id},
         timeout: 5000,
         success: function(data){
@@ -259,7 +259,7 @@ function setFichasInicio(id){
 function setFicha(id){
       $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:8080/api/getFichas",
+        url: "adriescacs.herokuapp.com/api/getFichas",
         data: {id: id},
         timeout: 5000,
         success: function(data){
@@ -288,7 +288,7 @@ function actualizarFicha(event){
         posFinal = event;
          $.ajax({
                 type: "POST",
-                url: "http://127.0.0.1:8080/api/actualizar",
+                url: "adriescacs.herokuapp.com/api/actualizar",
                 data: {posOrigen: posOrigen,posFinal: posFinal,idPartida: idPartida, idFigura: figura},
                 timeout: 5000,
                 success: function(data){
@@ -310,7 +310,7 @@ function listadoUsuarios(){
 
             $.ajax({
                 type: "POST",
-                url: "http://127.0.0.1:8080/api/espera",
+                url: "adriescacs.herokuapp.com/api/espera",
                 dataType: "JSON",
                 timeout: 5000,
                 success: function(data){
