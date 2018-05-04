@@ -126,7 +126,7 @@ function formLogin(){
 
     $.ajax({
         type: "POST",
-        url:"adriescacs.herokuapp.com/api/login",
+        url:"https://adriescacs.herokuapp.com/api/login",
         data: {email: mail, password: passwd},
         //contentType: "application/json; charset=utf-8",
         timeout: 2000,
@@ -162,7 +162,7 @@ function logout(){
 
     $.ajax({
         type: "POST",
-        url: "adriescacs.herokuapp.com/api/logout",
+        url: "https://adriescacs.herokuapp.com/api/logout",
         data: {email: email, token: token},
         timeout: 5000,
         success: function(data){
@@ -176,7 +176,13 @@ function logout(){
 
             i = setInterval(function(){
                  getPartida(i);
-            },5000);
+            },5000);   
+
+             myId = null;
+             idPartida = null;
+             posOrigen = "";
+             posFinal = "";
+             figura = "";
 
 
         },
@@ -191,7 +197,7 @@ function invitarJugador(){
 
     $.ajax({
         type: "POST",
-        url: "adriescacs.herokuapp.com/api/juga",
+        url: "https://adriescacs.herokuapp.com/api/juga",
         data: {usuarioCrea: myId, usuarioAcepta: idInvitado},
         timeout: 5000,
         success: function(data){
@@ -212,15 +218,14 @@ function getPartida(i){
     if(myId != null && myId != "" && myId != "undefined"){
         $.ajax({
             type: "POST",
-            url: "adriescacs.herokuapp.com/api/getPartida",
+            url: "https://adriescacs.herokuapp.com/api/getPartida",
             data: {id : myId},
             timeout: 5000,
             success: function(data){
-
-                $('#mostrar').hide();
-                app.crearTablero();
-                
-                if(myId != "" && myId != null){
+                console.log(data);
+                if(idPartida != "" && idPartida != null && idPartida != "undefined" || data.user1 == myId || data.user2 == myId){
+                    $('#mostrar').hide();
+                    app.crearTablero();
                     setFichasInicio(data.id);
                 }
                 idPartida = data.id;
@@ -237,7 +242,7 @@ function setFichasInicio(id){
     
     $.ajax({
         type: "POST",
-        url: "adriescacs.herokuapp.com/api/setFichas",
+        url: "https://adriescacs.herokuapp.com/api/setFichas",
         data: {currentId: id},
         timeout: 5000,
         success: function(data){
@@ -259,7 +264,7 @@ function setFichasInicio(id){
 function setFicha(id){
       $.ajax({
         type: "POST",
-        url: "adriescacs.herokuapp.com/api/getFichas",
+        url: "https://adriescacs.herokuapp.com/api/getFichas",
         data: {id: id},
         timeout: 5000,
         success: function(data){
@@ -288,7 +293,7 @@ function actualizarFicha(event){
         posFinal = event;
          $.ajax({
                 type: "POST",
-                url: "adriescacs.herokuapp.com/api/actualizar",
+                url: "https://adriescacs.herokuapp.com/api/actualizar",
                 data: {posOrigen: posOrigen,posFinal: posFinal,idPartida: idPartida, idFigura: figura},
                 timeout: 5000,
                 success: function(data){
@@ -310,7 +315,7 @@ function listadoUsuarios(){
 
             $.ajax({
                 type: "POST",
-                url: "adriescacs.herokuapp.com/api/espera",
+                url: "https://adriescacs.herokuapp.com/api/espera",
                 dataType: "JSON",
                 timeout: 5000,
                 success: function(data){
